@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AA Produções</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neonCyan: '#00f3ff',
+                        neonMagenta: '#ff0055',
+                        neonLime: '#39ff14',
+                        neonAmber: '#ffbf00',
+                        neonPurple: '#9d00ff',
+                        darkBg: '#050814',
+                        cardBg: '#0b1329',
+                    },
+                    boxShadow: {
+                        'glow-cyan': '0 0 15px rgba(0, 243, 255, 0.5)',
+                        'glow-magenta': '0 0 15px rgba(255, 0, 85, 0.5)',
+                        'glow-lime': '0 0 15px rgba(57, 255, 20, 0.5)',
+                        'glow-purple': '0 0 15px rgba(157, 0, 255, 0.5)',
+                        'glow-amber': '0 0 15px rgba(255, 191, 0, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #050814;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050814;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+        .glass-panel {
+            background: rgba(11, 19, 41, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type=range] {
+            accent-color: #00f3ff;
+            cursor: pointer;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 8px rgba(0,243,255,0.6)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 20px rgba(0,243,255,0.9)); }
+        }
+        .logo-pulse {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-neonCyan selection:text-black">
+
+    <header id="main-header" class="glass-panel border-b border-neonCyan/30 sticky top-0 z-50 px-4 py-3 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 relative flex items-center justify-center logo-pulse">
+                <svg viewBox="0 0 100 100" class="w-full h-full text-neonCyan fill-none stroke-current stroke-2" id="header-logo-svg">
+                    <circle cx="50" cy="50" r="42" stroke-dasharray="6 4" class="animate-spin" style="animation-duration: 20s;"></circle>
+                    <polygon points="50,15 85,75 15,75" stroke="#ff0055" stroke-width="2" class="opacity-80"></polygon>
+                    <polygon points="50,85 15,25 85,25" stroke="#00f3ff" stroke-width="2" class="opacity-80"></polygon>
+                    <circle cx="50" cy="50" r="12" fill="#39ff14" class="animate-pulse" id="logo-center-dot"></circle>
+                </svg>
+            </div>
+            <div>
+                <h1 id="brand-title" class="font-orbitron font-black text-xl sm:text-2xl tracking-wider text-neonCyan drop-shadow-[0_0_10px_#00f3ff] transition-all duration-300">
+                    AA PRODUÇÕES
+                </h1>
+                <p id="brand-subtitle" class="text-xs text-neonCyan/70 tracking-widest uppercase font-orbitron">Quantum Audio Engine v4.2</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+            <div id="system-status" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-neonLime/40 text-neonLime text-xs font-orbitron">
+                <span class="w-2 h-2 rounded-full bg-neonLime animate-ping" id="status-ping"></span>
+                <span>DSP ENGINE ATIVO</span>
+            </div>
+            <button onclick="openExportModal()" id="db-btn" class="px-3.5 py-2 rounded-lg bg-slate-900/90 border border-neonCyan/50 text-neonCyan hover:bg-neonCyan hover:text-black transition-all duration-300 text-xs font-orbitron flex items-center space-x-2 shadow-glow-cyan">
+                <i class="fa-solid fa-database"></i>
+                <span>BANCO DE DADOS</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl">
+        
+        <!-- LEFT COLUMN: File Upload & Playlist -->
+        <section class="lg:col-span-4 flex flex-col space-y-6">
+            <div id="upload-panel" class="glass-panel p-5 rounded-2xl border border-neonCyan/20 shadow-lg relative overflow-hidden group">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-neonCyan/5 rounded-full blur-2xl group-hover:bg-neonCyan/10 transition-all"></div>
+                <h2 id="upload-title" class="font-orbitron font-bold text-lg mb-3 flex items-center space-x-2 text-neonCyan">
+                    <i class="fa-solid fa-file-audio"></i>
+                    <span>IMPORTAR ÁUDIOS</span>
+                </h2>
+                <p class="text-xs text-slate-400 mb-4">Carregue arquivos WAV ou MP3. Armazenamento persistente automático.</p>
+                
+                <label for="audio-upload" id="upload-dropzone" class="flex flex-col items-center justify-center border-2 border-dashed border-neonCyan/40 hover:border-neonCyan rounded-xl p-6 cursor-pointer bg-slate-950/40 hover:bg-slate-900/60 transition-all group">
+                    <i id="upload-icon" class="fa-solid fa-cloud-arrow-up text-3xl text-neonCyan mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-sm font-semibold text-slate-200">Clique para selecionar áudios</span>
+                    <span class="text-xs text-slate-400 mt-1">WAV, MP3 (Salvo no Navegador)</span>
+                    <input type="file" id="audio-upload" accept="audio/mp3, audio/wav, audio/mpeg" multiple class="hidden" onchange="handleFileUpload(event)">
+                </label>
+            </div>
+
+            <div id="playlist-panel" class="glass-panel p-5 rounded-2xl border border-neonMagenta/20 shadow-lg flex-grow flex flex-col min-h-[300px]">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 id="playlist-title" class="font-orbitron font-bold text-lg flex items-center space-x-2 text-neonMagenta">
+                        <i class="fa-solid fa-list-ul"></i>
+                        <span>BIBLIOTECA (<span id="playlist-count">0</span>)</span>
+                    </h2>
+                    <button onclick="clearAllTracks()" class="text-xs text-red-400 hover:text-red-300 transition-colors font-orbitron flex items-center space-x-1" title="Limpar biblioteca">
+                        <i class="fa-solid fa-trash-can"></i> <span>Limpar</span>
+                    </button>
+                </div>
+                
+                <div id="playlist-container" class="flex-grow overflow-y-auto space-y-2 pr-1 max-h-[350px]">
+                    <div id="empty-playlist" class="flex flex-col items-center justify-center h-48 text-center text-slate-500">
+                        <i class="fa-solid fa-compact-disc text-4xl mb-2 opacity-30 animate-spin" style="animation-duration: 10s;"></i>
+                        <p class="text-sm">Nenhum áudio importado.</p>
+                        <p class="text-xs opacity-75">Seus áudios salvos permanecerão aqui.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CENTER & RIGHT COLUMN: Canvas Visualizer & Audio Controls -->
+        <section class="lg:col-span-8 flex flex-col space-y-6">
+            
+            <!-- Quantum Visualizer Canvas -->
+            <div id="visualizer-panel" class="glass-panel p-4 rounded-2xl border border-neonLime/30 shadow-xl relative overflow-hidden flex flex-col items-center justify-center min-h-[260px] sm:min-h-[320px]">
+                <div class="absolute top-3 left-4 flex items-center space-x-2 z-10">
+                    <span id="visualizer-ping" class="w-2.5 h-2.5 rounded-full bg-neonMagenta animate-ping"></span>
+                    <span id="visualizer-label" class="font-orbitron text-xs text-neonMagenta tracking-widest">TELA QUÂNTICA SOBRENATURAL</span>
+                </div>
+                <div class="absolute top-3 right-4 z-10 flex space-x-2">
+                    <span id="current-track-tag" class="text-xs bg-slate-900/80 px-2.5 py-1 rounded border border-neonCyan/30 text-neonCyan font-orbitron truncate max-w-[180px] sm:max-w-[280px]">Nenhum Áudio Selecionado</span>
+                </div>
+
+                <canvas id="quantum-canvas" class="w-full h-56 sm:h-72 rounded-xl bg-slate-950/85 border border-slate-800 shadow-inner mt-6"></canvas>
+
+                <div class="flex flex-wrap gap-2 mt-3 justify-center">
+                    <button onclick="setVisualMode('nebula')" class="px-3 py-1 rounded bg-slate-900 border border-neonCyan text-neonCyan text-xs font-orbitron shadow-glow-cyan" id="btn-mode-nebula">Nebulosa Quântica</button>
+                    <button onclick="setVisualMode('plasma')" class="px-3 py-1 rounded bg-slate-900 border border-slate-700 text-slate-300 text-xs font-orbitron hover:text-white transition-all" id="btn-mode-plasma">Plasma de Frequência</button>
+                    <button onclick="setVisualMode('matrix')" class="px-3 py-1 rounded bg-slate-900 border border-slate-700 text-slate-300 text-xs font-orbitron hover:text-white transition-all" id="btn-mode-matrix">Matriz Sobrenatural</button>
+                </div>
+            </div>
+
+            <!-- Main Audio Control Bar -->
+            <div id="controls-panel" class="glass-panel p-5 rounded-2xl border border-neonCyan/20 shadow-xl flex flex-col space-y-4">
+                
+                <div class="flex flex-col space-y-1">
+                    <div class="flex justify-between text-xs font-orbitron text-slate-400">
+                        <span id="time-current">00:00</span>
+                        <span id="time-total">00:00</span>
+                    </div>
+                    <input type="range" id="seek-slider" min="0" max="100" value="0" step="0.1" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer" oninput="seekAudio(this.value)">
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-3">
+                        <button onclick="prevTrack()" id="btn-prev" class="w-10 h-10 rounded-xl bg-slate-900 border border-neonCyan/50 text-neonCyan hover:shadow-glow-cyan flex items-center justify-center transition-all hover:scale-105 active:scale-95" title="Anterior">
+                            <i class="fa-solid fa-backward-step"></i>
+                        </button>
+                        <button id="play-btn" onclick="togglePlay()" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-neonCyan to-neonPurple text-black font-bold shadow-glow-cyan flex items-center justify-center text-xl transition-all hover:scale-105 active:scale-95" title="Reproduzir / Pausar">
+                            <i class="fa-solid fa-play" id="play-icon"></i>
+                        </button>
+                        <button onclick="nextTrack()" id="btn-next" class="w-10 h-10 rounded-xl bg-slate-900 border border-neonCyan/50 text-neonCyan hover:shadow-glow-cyan flex items-center justify-center transition-all hover:scale-105 active:scale-95" title="Próxima">
+                            <i class="fa-solid fa-forward-step"></i>
+                        </button>
+                    </div>
+
+                    <!-- LED palette buttons -->
+                    <div class="flex items-center space-x-2 bg-slate-950/60 px-3 py-2 rounded-xl border border-slate-800">
+                        <span class="text-xs font-orbitron text-slate-400 mr-1 hidden sm:inline">LEDS:</span>
+                        <button onclick="setThemeLED('cyan')" class="w-5 h-5 rounded-full bg-neonCyan shadow-glow-cyan hover:scale-125 transition-transform" title="Ciano"></button>
+                        <button onclick="setThemeLED('magenta')" class="w-5 h-5 rounded-full bg-neonMagenta shadow-glow-magenta hover:scale-125 transition-transform" title="Magenta"></button>
+                        <button onclick="setThemeLED('lime')" class="w-5 h-5 rounded-full bg-neonLime shadow-glow-lime hover:scale-125 transition-transform" title="Verde"></button>
+                        <button onclick="setThemeLED('amber')" class="w-5 h-5 rounded-full bg-neonAmber shadow-glow-amber hover:scale-125 transition-transform" title="Âmbar"></button>
+                        <button onclick="setThemeLED('purple')" class="w-5 h-5 rounded-full bg-neonPurple shadow-glow-purple hover:scale-125 transition-transform" title="Roxo"></button>
+                    </div>
+
+                    <div class="flex items-center space-x-3 bg-slate-950/60 px-4 py-2 rounded-xl border border-slate-800">
+                        <i id="volume-icon" class="fa-solid fa-volume-high text-neonCyan text-sm"></i>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-orbitron text-slate-400">VOLUME MASTER</span>
+                            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.8" class="w-24 sm:w-32 h-1.5 bg-slate-800 rounded-lg appearance-none" oninput="setMasterVolume(this.value)">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Equalizer, Delay, Reverb & Effects Panel -->
+            <div id="effects-panel" class="glass-panel p-5 rounded-2xl border border-neonAmber/20 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Equalizer & Fade Controls -->
+                <div class="flex flex-col space-y-4">
+                    <h3 id="eq-heading" class="font-orbitron font-bold text-sm text-neonAmber flex items-center space-x-2">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>EQUALIZADOR 3-BANDAS & AUTOMATION</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="flex flex-col items-center bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+                            <span class="text-xs font-orbitron text-slate-300 mb-1">GRAVE</span>
+                            <input type="range" id="eq-low" min="-20" max="20" value="0" step="1" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none mb-2" oninput="updateEQ()">
+                            <span id="val-low" class="text-[10px] text-neonAmber font-orbitron">0 dB</span>
+                        </div>
+                        <div class="flex flex-col items-center bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+                            <span class="text-xs font-orbitron text-slate-300 mb-1">MÉDIO</span>
+                            <input type="range" id="eq-mid" min="-20" max="20" value="0" step="1" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none mb-2" oninput="updateEQ()">
+                            <span id="val-mid" class="text-[10px] text-neonAmber font-orbitron">0 dB</span>
+                        </div>
+                        <div class="flex flex-col items-center bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+                            <span class="text-xs font-orbitron text-slate-300 mb-1">AGUDO</span>
+                            <input type="range" id="eq-high" min="-20" max="20" value="0" step="1" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none mb-2" oninput="updateEQ()">
+                            <span id="val-high" class="text-[10px] text-neonAmber font-orbitron">0 dB</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+                        <span class="text-xs font-orbitron text-slate-300">AUTOMATION FADES</span>
+                        <div class="flex space-x-2">
+                            <button onclick="triggerFadeIn()" class="px-3 py-1.5 rounded bg-slate-900 border border-neonCyan/30 text-neonCyan text-xs font-orbitron hover:bg-neonCyan hover:text-black transition-all shadow-glow-cyan">Fade In (3s)</button>
+                            <button onclick="triggerFadeOut()" class="px-3 py-1.5 rounded bg-slate-900 border border-neonMagenta/30 text-neonMagenta text-xs font-orbitron hover:bg-neonMagenta hover:text-white transition-all shadow-glow-magenta">Fade Out (3s)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delay & Reverb DSP Controllers -->
+                <div class="flex flex-col space-y-4">
+                    <h3 id="delay-heading" class="font-orbitron font-bold text-sm text-neonCyan flex items-center space-x-2">
+                        <i class="fa-solid fa-wave-square"></i>
+                        <span>PROCESSADOR DE DELAY & REVERB</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex flex-col bg-slate-950/50 p-3 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-orbitron text-neonCyan label-delay-time">DELAY TEMPO</span>
+                                <span id="val-delay-time" class="text-[10px] font-orbitron text-slate-400">0.3s</span>
+                            </div>
+                            <input type="range" id="delay-time" min="0" max="1" step="0.05" value="0.3" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none" oninput="updateDelay()">
+                            
+                            <div class="flex justify-between items-center pt-1">
+                                <span class="text-xs font-orbitron text-neonCyan label-delay-mix">DELAY MIX</span>
+                                <span id="val-delay-feedback" class="text-[10px] font-orbitron text-slate-400">0%</span>
+                            </div>
+                            <input type="range" id="delay-feedback" min="0" max="0.8" step="0.05" value="0" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none" oninput="updateDelay()">
+                        </div>
+
+                        <div class="flex flex-col bg-slate-950/50 p-3 rounded-xl border border-slate-800 justify-between">
+                            <div class="flex justify-between items-center">
+                                <span id="reverb-label-title" class="text-xs font-orbitron text-neonPurple">REVERB (ECO)</span>
+                                <span id="val-reverb-mix" class="text-[10px] font-orbitron text-slate-400">0%</span>
+                            </div>
+                            <input type="range" id="reverb-mix" min="0" max="1" step="0.05" value="0" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none" oninput="updateReverb()">
+                            <p class="text-[10px] text-slate-500 font-orbitron">Aumente para adicionar espacialidade 3D.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Surreal Filters -->
+                <div class="md:col-span-2 flex flex-col space-y-3 pt-2 border-t border-slate-800/80">
+                    <h3 id="filters-heading" class="font-orbitron font-bold text-sm text-neonPurple flex items-center space-x-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>FILTROS SURREAIS & SOBRENATURAIS</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="toggleFilter('robot')" id="btn-filter-robot" class="p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-neonPurple flex flex-col items-center justify-center transition-all group">
+                            <i class="fa-solid fa-robot text-lg text-slate-400 group-hover:text-neonPurple mb-1"></i>
+                            <span class="text-xs font-orbitron text-slate-300">Modo Ciborgue</span>
+                        </button>
+                        <button onclick="toggleFilter('space')" id="btn-filter-space" class="p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-neonCyan flex flex-col items-center justify-center transition-all group">
+                            <i class="fa-solid fa-satellite text-lg text-slate-400 group-hover:text-neonCyan mb-1"></i>
+                            <span class="text-xs font-orbitron text-slate-300">Espaço Profundo</span>
+                        </button>
+                        <button onclick="toggleFilter('distortion')" id="btn-filter-distortion" class="p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-neonMagenta flex flex-col items-center justify-center transition-all group">
+                            <i class="fa-solid fa-bolt text-lg text-slate-400 group-hover:text-neonMagenta mb-1"></i>
+                            <span class="text-xs font-orbitron text-slate-300">Distorção Abissal</span>
+                        </button>
+                        <button onclick="toggleFilter('alien')" id="btn-filter-alien" class="p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-neonLime flex flex-col items-center justify-center transition-all group">
+                            <i class="fa-solid fa-user-secret text-lg text-slate-400 group-hover:text-neonLime mb-1"></i>
+                            <span class="text-xs font-orbitron text-slate-300">Frequência Alien</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal Status -->
+    <div id="export-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden px-4">
+        <div id="modal-container" class="glass-panel p-6 rounded-2xl max-w-md w-full border border-neonCyan/40 shadow-2xl relative">
+            <button onclick="closeExportModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 id="modal-heading" class="font-orbitron font-bold text-lg text-neonCyan mb-3 flex items-center space-x-2">
+                <i class="fa-solid fa-database"></i>
+                <span>STATUS DO BANCO DE DADOS</span>
+            </h3>
+            <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                Este sistema utiliza <strong id="modal-highlight-text" class="text-neonCyan">Armazenamento Persistente no Navegador</strong>. Todos os seus áudios importados e configurações são salvos automaticamente e protegidos contra reinicializações.
+            </p>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 mb-4 text-xs font-mono text-slate-400">
+                <div>Áudios Armazenados: <span id="modal-track-count" class="text-neonLime font-bold">0</span></div>
+                <div>Modo de Persistência: <span id="modal-neon-mode" class="text-neonCyan font-bold">Ativo (Auto-Save Seguro)</span></div>
+            </div>
+            <button onclick="closeExportModal()" id="modal-action-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-neonCyan to-neonPurple text-black font-orbitron font-bold text-xs uppercase tracking-wider shadow-glow-cyan hover:opacity-90 transition-all">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer with Rights reserved -->
+    <footer id="main-footer" class="glass-panel border-t border-neonCyan/20 py-4 px-6 text-center text-xs font-orbitron text-slate-400">
+        <div class="flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto gap-2">
+            <div>AA PRODUÇÕES &copy; 2026. Todos os direitos reservados a André Almeida.</div>
+            <div class="flex items-center space-x-4 text-[10px] text-neonCyan/70" id="footer-badges">
+                <span><i class="fa-solid fa-shield-halved mr-1"></i>Quantum Audio Engine v4.2</span>
+                <span><i class="fa-solid fa-microchip mr-1"></i>Web Audio API DSP</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global Audio & DSP State Variables
+        let playlist = [];
+        let currentTrackIndex = -1;
+        let audioContext = null;
+        let audioElement = new Audio();
+        let sourceNode = null;
+        let analyserNode = null;
+        let masterGainNode = null;
+
+        // Equalizer Nodes
+        let eqLowNode = null;
+        let eqMidNode = null;
+        let eqHighNode = null;
+
+        // Delay & Reverb Nodes
+        let delayNode = null;
+        let delayGainNode = null;
+        let reverbConvolver = null;
+        let reverbGainNode = null;
+        let dryGainNode = null;
+
+        // Filter Node
+        let surrealFilterNode = null;
+
+        let isPlaying = false;
+        let visualMode = 'nebula';
+        let activeFilter = null;
+        let currentThemeColor = 'cyan';
+
+        window.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            setupCanvas();
+            renderPlaylist();
+            setThemeLED('cyan');
+        });
+
+        // Initialize Web Audio API Chain safely
+        function initAudioContext() {
+            if (audioContext) return;
+
+            try {
+                const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioCtxClass();
+
+                // 1. Analyser Node
+                analyserNode = audioContext.createAnalyser();
+                analyserNode.fftSize = 256;
+
+                // 2. Master Gain Node
+                masterGainNode = audioContext.createGain();
+                masterGainNode.gain.value = 0.8;
+
+                // 3. EQ Nodes
+                eqLowNode = audioContext.createBiquadFilter();
+                eqLowNode.type = 'lowshelf';
+                eqLowNode.frequency.value = 250;
+                eqLowNode.gain.value = 0;
+
+                eqMidNode = audioContext.createBiquadFilter();
+                eqMidNode.type = 'peaking';
+                eqMidNode.frequency.value = 1500;
+                eqMidNode.gain.value = 0;
+                eqMidNode.Q.value = 1;
+
+                eqHighNode = audioContext.createBiquadFilter();
+                eqHighNode.type = 'highshelf';
+                eqHighNode.frequency.value = 4000;
+                eqHighNode.gain.value = 0;
+
+                // 4. Surreal Filter Node
+                surrealFilterNode = audioContext.createBiquadFilter();
+                surrealFilterNode.type = 'allpass';
+                surrealFilterNode.frequency.value = 1000;
+
+                // 5. Delay Effect Circuit
+                delayNode = audioContext.createDelay();
+                delayNode.delayTime.value = 0.3;
+
+                delayGainNode = audioContext.createGain();
+                delayGainNode.gain.value = 0;
+
+                delayNode.connect(delayGainNode);
+                delayGainNode.connect(delayNode);
+
+                // 6. Reverb Impulse Generation (Convolver for Eco/Spatial Reverb)
+                reverbConvolver = audioContext.createConvolver();
+                generateReverbImpulse();
+
+                reverbGainNode = audioContext.createGain();
+                reverbGainNode.gain.value = 0; // Starts at 0% mix
+
+                dryGainNode = audioContext.createGain();
+                dryGainNode.gain.value = 1.0;
+
+                // 7. Media Element Source Connection
+                sourceNode = audioContext.createMediaElementSource(audioElement);
+
+                // Chain routing: Source -> EQ Low -> Mid -> High -> Surreal Filter
+                sourceNode
+                    .connect(eqLowNode)
+                    .connect(eqMidNode)
+                    .connect(eqHighNode)
+                    .connect(surrealFilterNode);
+
+                // Split routing from Filter to Dry, Delay, and Reverb Convolver
+                surrealFilterNode.connect(dryGainNode);
+                surrealFilterNode.connect(delayNode);
+                surrealFilterNode.connect(reverbConvolver);
+
+                // Reverb convolver connects through its gain node
+                reverbConvolver.connect(reverbGainNode);
+
+                // Connect wet & dry outputs to Master Gain
+                dryGainNode.connect(masterGainNode);
+                delayNode.connect(masterGainNode);
+                reverbGainNode.connect(masterGainNode);
+
+                // Master -> Analyser -> Output Destination
+                masterGainNode.connect(analyserNode);
+                analyserNode.connect(audioContext.destination);
+
+                // Audio Events
+                audioElement.addEventListener('timeupdate', updateProgress);
+                audioElement.addEventListener('ended', nextTrack);
+
+            } catch(e) {
+                console.error("Audio Context Initialization Error:", e);
+            }
+        }
+
+        // Generate synthetic Impulse Response for Reverb with guaranteed longevity and rich spatial tails
+        function generateReverbImpulse() {
+            if (!audioContext) return;
+            try {
+                const rate = audioContext.sampleRate;
+                const length = rate * 2.5; // 2.5 seconds reverb tail
+                const impulse = audioContext.createBuffer(2, length, rate);
+                const left = impulse.getChannelData(0);
+                const right = impulse.getChannelData(1);
+
+                for (let i = 0; i < length; i++) {
+                    const decay = Math.exp(-i / (rate * 0.5));
+                    left[i] = (Math.random() * 2 - 1) * decay;
+                    right[i] = (Math.random() * 2 - 1) * decay;
+                }
+                reverbConvolver.buffer = impulse;
+            } catch (err) {
+                console.error("Reverb impulse generation error:", err);
+            }
+        }
+
+        // Save playlist to localStorage securely with quota checking
+        function saveToLocalStorage() {
+            try {
+                const serialized = JSON.stringify(playlist);
+                localStorage.setItem('aa_producoes_persistent_playlist_v3', serialized);
+            } catch (e) {
+                console.error("Storage limit reached:", e);
+                showModalAlert("Armazenamento cheios. Tente importar arquivos menores ou limpar alguns áudios.");
+            }
+        }
+
+        // Load playlist from localStorage supporting multiple keys
+        function loadFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem('aa_producoes_persistent_playlist_v3') || 
+                              localStorage.getItem('aa_producoes_playlist_v2') || 
+                              localStorage.getItem('aa_producoes_playlist');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) {
+                        playlist = parsed;
+                    }
+                }
+            } catch (e) {
+                console.error("Error loading storage:", e);
+                playlist = [];
+            }
+        }
+
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            let count = 0;
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    const cleanName = file.name.replace(/\.[^/.]+$/, "");
+                    playlist.push({
+                        id: 'track_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                        name: cleanName,
+                        dataBase64: base64Data
+                    });
+                    count++;
+                    if (count === files.length) {
+                        saveToLocalStorage();
+                        renderPlaylist();
+                        if (currentTrackIndex === -1 && playlist.length > 0) {
+                            selectTrack(0);
+                        }
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+            event.target.value = '';
+        }
+
+        function renderPlaylist() {
+            const container = document.getElementById('playlist-container');
+            const countSpan = document.getElementById('playlist-count');
+            const modalCount = document.getElementById('modal-track-count');
+            
+            if (countSpan) countSpan.textContent = playlist.length;
+            if (modalCount) modalCount.textContent = playlist.length;
+
+            if (playlist.length === 0) {
+                container.innerHTML = '<div id="empty-playlist" class="flex flex-col items-center justify-center h-48 text-center text-slate-500"><i class="fa-solid fa-compact-disc text-4xl mb-2 opacity-30 animate-spin" style="animation-duration: 10s;"></i><p class="text-sm">Nenhum áudio importado.</p></div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            playlist.forEach((track, index) => {
+                const isCurrent = index === currentTrackIndex;
+                let activeBorderColor = 'border-neonCyan text-neonCyan shadow-glow-cyan';
+                if (currentThemeColor === 'magenta') activeBorderColor = 'border-neonMagenta text-neonMagenta shadow-glow-magenta';
+                if (currentThemeColor === 'lime') activeBorderColor = 'border-neonLime text-neonLime shadow-glow-lime';
+                if (currentThemeColor === 'amber') activeBorderColor = 'border-neonAmber text-neonAmber shadow-glow-amber';
+                if (currentThemeColor === 'purple') activeBorderColor = 'border-neonPurple text-neonPurple shadow-glow-purple';
+
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 rounded-xl border transition-all ' + 
+                    (isCurrent ? 'bg-slate-900/90 ' + activeBorderColor : 'bg-slate-950/40 border-slate-800/80 text-slate-300 hover:border-slate-700');
+                
+                const playIconClass = (isCurrent && isPlaying) ? 'fa-volume-high animate-bounce' : 'fa-music opacity-60';
+
+                item.innerHTML = '<div class="flex items-center space-x-3 cursor-pointer truncate flex-grow mr-2" onclick="selectTrack(' + index + ')">' +
+                    '<i class="fa-solid ' + playIconClass + '"></i>' +
+                    '<span class="text-xs font-orbitron truncate">' + track.name + '</span>' +
+                    '</div>' +
+                    '<button onclick="deleteTrack(event, ' + index + ')" class="text-slate-500 hover:text-red-400 p-1.5 transition-colors" title="Deletar">' +
+                    '<i class="fa-solid fa-trash-can text-xs"></i>' +
+                    '</button>';
+                container.appendChild(item);
+            });
+        }
+
+        function selectTrack(index) {
+            if (index < 0 || index >= playlist.length) return;
+            currentTrackIndex = index;
+            const track = playlist[index];
+
+            initAudioContext();
+
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            audioElement.src = track.dataBase64;
+            audioElement.load();
+            document.getElementById('current-track-tag').textContent = track.name;
+            
+            renderPlaylist();
+            playAudio();
+        }
+
+        function togglePlay() {
+            if (playlist.length === 0) return;
+            if (currentTrackIndex === -1) {
+                selectTrack(0);
+                return;
+            }
+
+            initAudioContext();
+
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            if (isPlaying) {
+                audioElement.pause();
+                isPlaying = false;
+                document.getElementById('play-icon').className = 'fa-solid fa-play';
+            } else {
+                playAudio();
+            }
+            renderPlaylist();
+        }
+
+        function playAudio() {
+            initAudioContext();
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            audioElement.play().then(function() {
+                isPlaying = true;
+                document.getElementById('play-icon').className = 'fa-solid fa-pause';
+                renderPlaylist();
+            }).catch(function(err) {
+                console.error("Playback error:", err);
+            });
+        }
+
+        function nextTrack() {
+            if (playlist.length === 0) return;
+            let nextIdx = (currentTrackIndex + 1) % playlist.length;
+            selectTrack(nextIdx);
+        }
+
+        function prevTrack() {
+            if (playlist.length === 0) return;
+            let prevIdx = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+            selectTrack(prevIdx);
+        }
+
+        function deleteTrack(event, index) {
+            event.stopPropagation();
+            const wasPlayingCurrent = (index === currentTrackIndex);
+            if (wasPlayingCurrent) {
+                audioElement.pause();
+                isPlaying = false;
+                document.getElementById('play-icon').className = 'fa-solid fa-play';
+                document.getElementById('current-track-tag').textContent = 'Nenhum Áudio Selecionado';
+            }
+
+            playlist.splice(index, 1);
+            
+            if (wasPlayingCurrent) {
+                currentTrackIndex = playlist.length > 0 ? 0 : -1;
+                if (currentTrackIndex !== -1) {
+                    selectTrack(currentTrackIndex);
+                }
+            } else if (index < currentTrackIndex) {
+                currentTrackIndex--;
+            }
+
+            saveToLocalStorage();
+            renderPlaylist();
+        }
+
+        function clearAllTracks() {
+            if (playlist.length === 0) return;
+            audioElement.pause();
+            isPlaying = false;
+            playlist = [];
+            currentTrackIndex = -1;
+            document.getElementById('play-icon').className = 'fa-solid fa-play';
+            document.getElementById('current-track-tag').textContent = 'Nenhum Áudio Selecionado';
+            saveToLocalStorage();
+            renderPlaylist();
+        }
+
+        function setMasterVolume(val) {
+            if (masterGainNode) {
+                masterGainNode.gain.value = parseFloat(val);
+            }
+        }
+
+        function seekAudio(val) {
+            if (!audioElement.duration) return;
+            audioElement.currentTime = (val / 100) * audioElement.duration;
+        }
+
+        function updateProgress() {
+            if (!audioElement.duration) return;
+            const current = audioElement.currentTime;
+            const duration = audioElement.duration;
+            
+            const seekSlider = document.getElementById('seek-slider');
+            seekSlider.value = (current / duration) * 100;
+
+            document.getElementById('time-current').textContent = formatTime(current);
+            document.getElementById('time-total').textContent = formatTime(duration);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+
+        function updateEQ() {
+            const lowVal = parseFloat(document.getElementById('eq-low').value);
+            const midVal = parseFloat(document.getElementById('eq-mid').value);
+            const highVal = parseFloat(document.getElementById('eq-high').value);
+
+            document.getElementById('val-low').textContent = lowVal + ' dB';
+            document.getElementById('val-mid').textContent = midVal + ' dB';
+            document.getElementById('val-high').textContent = highVal + ' dB';
+
+            if (eqLowNode) eqLowNode.gain.value = lowVal;
+            if (eqMidNode) eqMidNode.gain.value = midVal;
+            if (eqHighNode) eqHighNode.gain.value = highVal;
+        }
+
+        function updateDelay() {
+            const time = parseFloat(document.getElementById('delay-time').value);
+            const feedback = parseFloat(document.getElementById('delay-feedback').value);
+
+            document.getElementById('val-delay-time').textContent = time + 's';
+            document.getElementById('val-delay-feedback').textContent = Math.round(feedback * 100) + '%';
+
+            if (delayNode) delayNode.delayTime.value = time;
+            if (delayGainNode) delayGainNode.gain.value = feedback;
+        }
+
+        function updateReverb() {
+            const mix = parseFloat(document.getElementById('reverb-mix').value);
+            document.getElementById('val-reverb-mix').textContent = Math.round(mix * 100) + '%';
+
+            if (!audioContext) initAudioContext();
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            if (reverbGainNode && audioContext) {
+                const now = audioContext.currentTime;
+                reverbGainNode.gain.cancelScheduledValues(now);
+                reverbGainNode.gain.setValueAtTime(mix, now);
+            }
+        }
+
+        function triggerFadeIn() {
+            initAudioContext();
+            if (!masterGainNode || !audioContext) return;
+            try {
+                const targetVol = parseFloat(document.getElementById('volume-slider').value) || 0.8;
+                const now = audioContext.currentTime;
+                masterGainNode.gain.cancelScheduledValues(now);
+                masterGainNode.gain.setValueAtTime(0.0001, now);
+                masterGainNode.gain.linearRampToValueAtTime(targetVol, now + 3);
+            } catch(e) {
+                console.error("Fade in error:", e);
+            }
+        }
+
+        function triggerFadeOut() {
+            initAudioContext();
+            if (!masterGainNode || !audioContext) return;
+            try {
+                const now = audioContext.currentTime;
+                const currentVal = masterGainNode.gain.value || 0.8;
+                masterGainNode.gain.cancelScheduledValues(now);
+                masterGainNode.gain.setValueAtTime(currentVal, now);
+                masterGainNode.gain.linearRampToValueAtTime(0.0001, now + 3);
+                setTimeout(function() {
+                    if (isPlaying) togglePlay();
+                }, 3000);
+            } catch(e) {
+                console.error("Fade out error:", e);
+            }
+        }
+
+        function showModalAlert(message) {
+            openExportModal();
+            const modalText = document.getElementById('modal-highlight-text');
+            if (modalText) modalText.textContent = message;
+        }
+
+        function toggleFilter(type) {
+            if (!surrealFilterNode) initAudioContext();
+            if (!surrealFilterNode) return;
+            
+            const filterTypes = ['robot', 'space', 'distortion', 'alien'];
+            filterTypes.forEach(function(t) {
+                const btn = document.getElementById('btn-filter-' + t);
+                if (btn) {
+                    btn.className = "p-3 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-neonPurple flex flex-col items-center justify-center transition-all group";
+                }
+            });
+
+            if (activeFilter === type) {
+                activeFilter = null;
+                surrealFilterNode.type = 'allpass';
+                surrealFilterNode.frequency.value = 1000;
+                return;
+            }
+
+            activeFilter = type;
+            const btn = document.getElementById('btn-filter-' + type);
+
+            if (type === 'robot') {
+                surrealFilterNode.type = 'bandpass';
+                surrealFilterNode.frequency.value = 800;
+                surrealFilterNode.Q.value = 5;
+                if (btn) btn.className = "p-3 rounded-xl bg-slate-900 border border-neonPurple shadow-glow-purple flex flex-col items-center justify-center transition-all group";
+            } else if (type === 'space') {
+                surrealFilterNode.type = 'lowpass';
+                surrealFilterNode.frequency.value = 1200;
+                surrealFilterNode.Q.value = 3;
+                if (btn) btn.className = "p-3 rounded-xl bg-slate-900 border border-neonCyan shadow-glow-cyan flex flex-col items-center justify-center transition-all group";
+            } else if (type === 'distortion') {
+                surrealFilterNode.type = 'peaking';
+                surrealFilterNode.frequency.value = 3000;
+                surrealFilterNode.gain.value = 18;
+                if (btn) btn.className = "p-3 rounded-xl bg-slate-900 border border-neonMagenta shadow-glow-magenta flex flex-col items-center justify-center transition-all group";
+            } else if (type === 'alien') {
+                surrealFilterNode.type = 'highpass';
+                surrealFilterNode.frequency.value = 2500;
+                if (btn) btn.className = "p-3 rounded-xl bg-slate-900 border border-neonLime shadow-glow-lime flex flex-col items-center justify-center transition-all group";
+            }
+        }
+
+        // Futuristic LED color themes selector
+        function setThemeLED(color) {
+            currentThemeColor = color;
+            const title = document.getElementById('brand-title');
+            if (!title) return;
+
+            let rgbGlow = 'rgba(0, 243, 255, 0.5)';
+            let titleClass = "font-orbitron font-black text-xl sm:text-2xl tracking-wider text-neonCyan drop-shadow-[0_0_10px_#00f3ff] transition-all duration-300";
+
+            if (color === 'cyan') {
+                rgbGlow = 'rgba(0, 243, 255, 0.5)';
+                titleClass = "font-orbitron font-black text-xl sm:text-2xl tracking-wider text-neonCyan drop-shadow-[0_0_10px_#00f3ff] transition-all duration-300";
+            } else if (color === 'magenta') {
+                rgbGlow = 'rgba(255, 0, 85, 0.5)';
+                titleClass = "font-orbitron font-black text-xl sm:text-2xl tracking-wider text-neonMagenta drop-shadow-[0_0_10px_#ff0055] transition-all duration-300";
+            } else if (color === 'lime') {
+                rgbGlow = 'rgba(57, 255, 20, 0.5)';
+                titleClass = "font-orbitron font-black text-xl sm:text-2xl tracking-wider text-neonLime drop-shadow-[0_0_10px_#39ff14] transition-all duration-300";
+            } else if (color === 'amber') {
+                rgbGlow = 'rgba(255, 191, 0, 0.5)';
+                titleClass = "font-orbitron font-black text-xl sm:text-2xl tracking-wider text-neonAmber drop-shadow-[0_0_10px_#ffbf00] transition-all duration-300";
+            } else if (color === 'purple') {
+                rgbGlow = 'rgba(157, 0, 255, 0.5)';
+                titleClass = "font-orbitron font-black text-xl sm:text-2xl tracking-wider text-neonPurple drop-shadow-[0_0_10px_#9d00ff] transition-all duration-300";
+            }
+
+            title.className = titleClass;
+
+            const header = document.getElementById('main-header');
+            if (header) header.style.borderColor = rgbGlow;
+
+            const uploadPanel = document.getElementById('upload-panel');
+            if (uploadPanel) uploadPanel.style.borderColor = rgbGlow;
+
+            const playlistPanel = document.getElementById('playlist-panel');
+            if (playlistPanel) playlistPanel.style.borderColor = rgbGlow;
+
+            const visualizerPanel = document.getElementById('visualizer-panel');
+            if (visualizerPanel) visualizerPanel.style.borderColor = rgbGlow;
+
+            const controlsPanel = document.getElementById('controls-panel');
+            if (controlsPanel) controlsPanel.style.borderColor = rgbGlow;
+
+            const effectsPanel = document.getElementById('effects-panel');
+            if (effectsPanel) effectsPanel.style.borderColor = rgbGlow;
+
+            renderPlaylist();
+        }
+
+        function setVisualMode(mode) {
+            visualMode = mode;
+            const modes = ['nebula', 'plasma', 'matrix'];
+            modes.forEach(function(m) {
+                const btn = document.getElementById('btn-mode-' + m);
+                if (btn) {
+                    if (m === mode) {
+                        btn.className = "px-3 py-1 rounded bg-slate-900 border border-neonCyan text-neonCyan text-xs font-orbitron shadow-glow-cyan";
+                    } else {
+                        btn.className = "px-3 py-1 rounded bg-slate-900 border border-slate-700 text-slate-300 text-xs font-orbitron hover:text-white transition-all";
+                    }
+                }
+            });
+        }
+
+        function setupCanvas() {
+            const canvas = document.getElementById('quantum-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                if (canvas.parentElement) {
+                    canvas.width = canvas.parentElement.clientWidth - 32;
+                    canvas.height = canvas.parentElement.clientHeight - 60;
+                }
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            let particles = [];
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    color: Math.random() > 0.5 ? '#00f3ff' : '#ff0055'
+                });
+            }
+
+            function draw() {
+                requestAnimationFrame(draw);
+                
+                ctx.fillStyle = 'rgba(5, 8, 20, 0.25)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                let dataArray = new Uint8Array(128);
+                if (analyserNode && isPlaying) {
+                    analyserNode.getByteFrequencyData(dataArray);
+                } else {
+                    dataArray.fill(12);
+                }
+
+                let bassSum = 0;
+                for (let i = 0; i < 10; i++) bassSum += dataArray[i];
+                let bassAvg = bassSum / 10;
+
+                if (visualMode === 'nebula') {
+                    let centerX = canvas.width / 2;
+                    let centerY = canvas.height / 2;
+                    let radius = 40 + (bassAvg * 0.8);
+
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(0, 243, 255, ' + (0.2 + (bassAvg / 255)) + ')';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    let barWidth = (canvas.width / dataArray.length) * 1.8;
+                    let x = 0;
+                    for (let i = 0; i < dataArray.length; i++) {
+                        let barHeight = (dataArray[i] / 255) * (canvas.height * 0.7);
+                        let gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+                        gradient.addColorStop(0, '#00f3ff');
+                        gradient.addColorStop(0.5, '#9d00ff');
+                        gradient.addColorStop(1, '#ff0055');
+
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+                        x += barWidth;
+                    }
+                } else if (visualMode === 'plasma') {
+                    let barWidth = canvas.width / dataArray.length;
+                    let x = 0;
+                    for (let i = 0; i < dataArray.length; i++) {
+                        let h = (dataArray[i] / 255) * canvas.height;
+                        ctx.fillStyle = 'hsl(' + (i * 3 + bassAvg) + ', 100%, 50%)';
+                        ctx.fillRect(x, canvas.height / 2 - h / 2, barWidth - 1, h * 0.8);
+                        x += barWidth;
+                    }
+                } else if (visualMode === 'matrix') {
+                    particles.forEach(function(p) {
+                        p.x += p.vx * (1 + bassAvg / 40);
+                        p.y += p.vy * (1 + bassAvg / 40);
+                        if (p.x < 0) p.x = canvas.width;
+                        if (p.x > canvas.width) p.x = 0;
+                        if (p.y < 0) p.y = canvas.height;
+                        if (p.y > canvas.height) p.y = 0;
+
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius + (bassAvg / 25), 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+            }
+            draw();
+        }
+
+        function openExportModal() {
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
